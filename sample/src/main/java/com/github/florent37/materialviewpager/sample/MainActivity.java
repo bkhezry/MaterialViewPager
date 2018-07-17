@@ -49,7 +49,7 @@ public class MainActivity extends DrawerActivity {
 
       @Override
       public int getCount() {
-        return 6;
+        return 7;
       }
 
       @Override
@@ -81,7 +81,7 @@ public class MainActivity extends DrawerActivity {
           case 0:
             return HeaderDesign.fromColorResAndUrl(
               R.color.green,
-              "http://phandroid.s3.amazonaws.com/wp-content/uploads/2014/06/android_google_moutain_google_now_1920x1080_wallpaper_Wallpaper-HD_2560x1600_www.paperhi.com_-640x400.jpg");
+              "");
           case 1:
             return HeaderDesign.fromColorResAndUrl(
               R.color.blue,
@@ -105,7 +105,7 @@ public class MainActivity extends DrawerActivity {
           case 6:
             return HeaderDesign.fromColorResAndUrl(
               R.color.red,
-              "http://www.tothemobile.com/wp-content/uploads/2014/07/original.jpg");
+              "");
         }
 
         //execute others actions if needed (ex : modify your header logo)

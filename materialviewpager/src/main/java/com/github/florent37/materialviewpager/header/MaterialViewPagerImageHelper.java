@@ -26,100 +26,103 @@ import android.os.Handler;
  */
 public class MaterialViewPagerImageHelper {
 
-    private static MaterialViewPager.OnImageLoadListener imageLoadListener;
+  private static MaterialViewPager.OnImageLoadListener imageLoadListener;
 
-    /**
-     * change the image with a fade
-     *
-     * @param urlImage
-     * @param fadeDuration TODO : remove Picasso
-     */
-    public static void setImageUrl(final ImageView imageView, final String urlImage, final int fadeDuration) {
-        final float alpha = ViewCompat.getAlpha(imageView);
-        final ImageView viewToAnimate = imageView;
+  /**
+   * change the image with a fade
+   *
+   * @param urlImage
+   * @param fadeDuration TODO : remove Picasso
+   */
+  public static void setImageUrl(final ImageView imageView, final String urlImage, final int fadeDuration) {
+    final float alpha = ViewCompat.getAlpha(imageView);
 
-        //fade to alpha=0
-        fadeOut(viewToAnimate, fadeDuration, new ViewPropertyAnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(View view) {
-                super.onAnimationEnd(view);
+    //fade to alpha=0
+    fadeOut(imageView, fadeDuration, new ViewPropertyAnimatorListenerAdapter() {
+      @Override
+      public void onAnimationEnd(View view) {
+        super.onAnimationEnd(view);
 
-                //change the image when alpha=0
-                Glide.with(imageView.getContext()).load(urlImage)
-                    .apply(new RequestOptions().centerCrop())
-                    .listener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            return false;
-                        }
+        //change the image when alpha=0
+        if (urlImage != null) {
+          if (!urlImage.equals("")) {
+            Glide.with(imageView.getContext()).load(urlImage)
+              .apply(new RequestOptions().centerCrop())
+              .listener(new RequestListener<Drawable>() {
+                @Override
+                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                  return false;
+                }
 
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            //then fade to alpha=1
-                            new Handler(Looper.getMainLooper()) {}.post(new Runnable(){
-                               @Override
-                                public void run(){
-                                   fadeIn(viewToAnimate, alpha, fadeDuration, new ViewPropertyAnimatorListenerAdapter());
-                                   if (imageLoadListener != null) {
-                                       imageLoadListener.OnImageLoad(imageView, ((BitmapDrawable) imageView.getDrawable()).getBitmap());
-                                   }
-                               }
-                            });
+                @Override
+                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                  //then fade to alpha=1
+                  new Handler(Looper.getMainLooper()) {
+                  }.post(new Runnable() {
+                    @Override
+                    public void run() {
+                      fadeIn(imageView, alpha, fadeDuration, new ViewPropertyAnimatorListenerAdapter());
+                      if (imageLoadListener != null) {
+                        imageLoadListener.OnImageLoad(imageView, ((BitmapDrawable) imageView.getDrawable()).getBitmap());
+                      }
+                    }
+                  });
 
-                            return false;
-                        }
-                    })
-                    .into(viewToAnimate);
-            }
-        });
-    }
+                  return false;
+                }
+              })
+              .into(imageView);
+          }
+        }
+      }
+    });
+  }
 
-    public static void fadeOut(View view, int fadeDuration, ViewPropertyAnimatorListenerAdapter listener) {
-        //fade to alpha=0
-        ViewCompat.animate(view)
-            .alpha(0)
-            .setDuration(fadeDuration)
-            .withLayer()
-            .setInterpolator(new DecelerateInterpolator())
-            .setListener(listener);
-    }
+  public static void fadeOut(View view, int fadeDuration, ViewPropertyAnimatorListenerAdapter listener) {
+    //fade to alpha=0
+    ViewCompat.animate(view)
+      .alpha(0)
+      .setDuration(fadeDuration)
+      .withLayer()
+      .setInterpolator(new DecelerateInterpolator())
+      .setListener(listener);
+  }
 
-    public static void fadeIn(View view, float alpha, int fadeDuration, ViewPropertyAnimatorListenerAdapter listener) {
-        //fade to alpha=0
-        ViewCompat.animate(view)
-            .alpha(alpha)
-            .setDuration(fadeDuration)
-            .withLayer()
-            .setInterpolator(new AccelerateInterpolator())
-            .setListener(listener);
-    }
+  public static void fadeIn(View view, float alpha, int fadeDuration, ViewPropertyAnimatorListenerAdapter listener) {
+    //fade to alpha=0
+    ViewCompat.animate(view)
+      .alpha(alpha)
+      .setDuration(fadeDuration)
+      .withLayer()
+      .setInterpolator(new AccelerateInterpolator())
+      .setListener(listener);
+  }
 
-    /**
-     * change the image with a fade
-     *
-     * @param drawable
-     * @param fadeDuration
-     */
-    public static void setImageDrawable(final ImageView imageView, final Drawable drawable, final int fadeDuration) {
-        final float alpha = ViewCompat.getAlpha(imageView);
-        final ImageView viewToAnimate = imageView;
+  /**
+   * change the image with a fade
+   *
+   * @param drawable
+   * @param fadeDuration
+   */
+  public static void setImageDrawable(final ImageView imageView, final Drawable drawable, final int fadeDuration) {
+    final float alpha = ViewCompat.getAlpha(imageView);
 
-        fadeOut(viewToAnimate, fadeDuration, new ViewPropertyAnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(View view) {
-                super.onAnimationEnd(view);
-                //change the image when alpha=0
+    fadeOut(imageView, fadeDuration, new ViewPropertyAnimatorListenerAdapter() {
+      @Override
+      public void onAnimationEnd(View view) {
+        super.onAnimationEnd(view);
+        //change the image when alpha=0
 
-                imageView.setImageDrawable(drawable);
+        imageView.setImageDrawable(drawable);
 
-                //then fade to alpha=1
-                fadeIn(viewToAnimate, alpha, fadeDuration, new ViewPropertyAnimatorListenerAdapter());
-            }
-        });
-    }
+        //then fade to alpha=1
+        fadeIn(imageView, alpha, fadeDuration, new ViewPropertyAnimatorListenerAdapter());
+      }
+    });
+  }
 
-    public static void setImageLoadListener(MaterialViewPager.OnImageLoadListener imageLoadListener) {
-        MaterialViewPagerImageHelper.imageLoadListener = imageLoadListener;
-    }
+  public static void setImageLoadListener(MaterialViewPager.OnImageLoadListener imageLoadListener) {
+    MaterialViewPagerImageHelper.imageLoadListener = imageLoadListener;
+  }
 }
 
